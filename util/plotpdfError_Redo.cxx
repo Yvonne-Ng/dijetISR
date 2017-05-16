@@ -17,6 +17,7 @@
 #include <array>
 #include "TFile.h"
 #include "TROOT.h"
+#include <fstream>
 
 using namespace std;
 using std::string;
@@ -30,6 +31,23 @@ void usage(){
 void variableUsage(){
     
         cout<<"Variable can only be \"tau21JDDT\" or \"massJ\""<<endl;
+}
+
+//Take in weight file name, output vector of weights
+vector<double> reading_weights(string & weightInputName){
+    cout<<"---Reading in weight file----"<<endl;
+    //Declaring ifstream
+    ifstream weightInput;
+    //Opening weightFile
+    weightInput.open(weightInputName.c_str()); 
+    
+    vector<double> weights;
+    double input;
+    while (!weightInput.eof()){
+        weightInput >> input;
+        weights.push_back(input);
+    }
+   return weights;
 }
 
 
