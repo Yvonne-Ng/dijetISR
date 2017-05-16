@@ -187,6 +187,7 @@ int main(int argc, char* argv[]){
         hist[i]=(TH1F*)(gROOT->FindObject(histogramName.c_str()));
     }
 
+
 //Drawing the histogram 
     // Setting the canvas name 
     string histTitle=varInput;
