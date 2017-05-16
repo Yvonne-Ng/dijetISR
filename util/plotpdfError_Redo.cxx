@@ -86,6 +86,8 @@ int main(int argc, char* argv[]){
     vector<double> pdfWeights=reading_weights(weightFileName);
 
     TH1F * hist[totalHistNum];
+    TH1F * preCutHist[totalHistNum];
+    TH1F * histTau21[totalHistNum];
 //Initializing histograms
      string histName;
      string preCutHistName;
@@ -103,8 +105,8 @@ int main(int argc, char* argv[]){
         else if (j>0 && j<101){
             histName="pdfIntErr";
             histName+=to_string(j);
-	    preCutHistName+="pdfIntErr";
-	    preCutHistName+=to_string(j);
+	        preCutHistName+="pdfIntErr";
+	        preCutHistName+=to_string(j);
             histTau21Name+="pdfIntErr";
             histTau21Name+=to_string(j);
         }
@@ -119,12 +121,17 @@ int main(int argc, char* argv[]){
             histTau21Name+="pdfExtVS_MMHT";
         }
 	else if (j==103){
-	
+        cerr<<"histogram naming out of bound"<<endl;
+
 	}
 
-            cout<<"Histogram name: "<<histName<<endl;
-            hist[j]= new TH1F(histName.c_str(), histName.c_str(), 45,0,0.9); //Range for tau21
+               cout<<"hist Tau21 Name: "<<histTau21Name<<endl;
+            hist[j]= new TH1F(histName.c_str(), histName.c_str(), 60,0,0.9); //Range for tau21
+	    preCutHist[j]=new TH1F(preCutHistName.c_str(), preCutHistName.c_str(), 60,0,0.9);
+            histTau21[j]= new TH1F(histTau21Name.c_str(), histTau21Name.c_str(),60,0,0.9);
             hist[j]->Sumw2();
+            preCutHist[j]->Sumw2();
+            histTau21[j]->Sumw2();
      }
 
     //Opening the input TTree
