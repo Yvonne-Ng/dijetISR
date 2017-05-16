@@ -195,6 +195,9 @@ int main(int argc, char* argv[]){
         histTau21Filling+=histTau21HistogramName;
 
 //creating the weighting option
+//preCutHistogram: pre tau21 cut
+//tau21Histogram after tau21 cut (reweighted by the histogram cut)
+//regular histogram: reweighting
 	preCutWeight="weight*";
         weighting="(tau21JDDT<0.47)*weight*";
         histTau21Weight="(tau21JDDT<0.47)*weight*";
@@ -299,6 +302,10 @@ int main(int argc, char* argv[]){
         }   */
     }
     //Declaring and initializing the canvas
+    
+    //Drawing the histograms
+    //the Histograms are already reweighted above,
+    //histTau21 needs to be furthre reweighted from the result of preCuthistogram
     TCanvas *c1= new TCanvas();
     double histScale;
     //Drawing the histogram
