@@ -112,12 +112,12 @@ int main(int argc, char* argv[]){
         }
         else if (j==101){
             histName="pdfExtVS_CT4";
-	    preCutHistName+="pdfExtVS_CT4";
+	        preCutHistName+="pdfExtVS_CT4";
             histTau21Name+="pdfExtVS_CT4";
         }
         else if (j==102){
             histName="pdfExtVS_MMHT";
-	    preCutHistName+="pdfExtVS_MMHT";
+	        preCutHistName+="pdfExtVS_MMHT";
             histTau21Name+="pdfExtVS_MMHT";
         }
 	else if (j==103){
@@ -142,52 +142,130 @@ int main(int argc, char* argv[]){
     cout<<"Tree entries #: "<<nentries<<endl;
 
     //Filling the histogram
+    string preCutHistFilling;
+    //string preHistogramName;
     string histFilling; //var>>hist (first param of Draw)
     string weighting;   //the weight used (second param of Draw)
+    string preCutWeight;
     string histogramName;
+    string histTau21Filling;
+    string histTau21Weight;
     for (int i=0; i< 103; i++){
         //weighting="";
 //creating the hist filling option
+	preCutHistFilling=varInput;
+	preCutHistFilling+=">>";
         histFilling=varInput;
         histFilling+=">>";
+        histTau21Filling=varInput;
+        histTau21Filling+=">>";
+	string preHistogramName="preCut";
+        string histTau21HistogramName="Tau21";
         if (i==0){
             histogramName="Nominal";
+	    preHistogramName+="Nominal";
+            histTau21HistogramName+="Nominal";
         }   
         else if (i>0 && i<101){
             histogramName="pdfIntErr";
             histogramName+=to_string(i);
+	    preHistogramName+="pdfIntErr";
+	    preHistogramName+=to_string(i);
+            histTau21HistogramName+="pdfIntErr";
+            histTau21HistogramName+=to_string(i);
+
         }
         else if (i==101){
             histogramName="pdfExtVS_CT4";
+	    preHistogramName+="pdfExtVS_CT4";
+            histTau21HistogramName+="pdfExtVS_CT4";
         }
         else if (i==102){
             histogramName="pdfExtVS_MMHT";
+	    preHistogramName+="pdfExtVS_MMHT";
+            histTau21HistogramName+="pdfExtVS_MMHT";
+
         }
-        cout<<"histogram Name: "<<histogramName<<endl;
+        //cout<<"histogram Name: "<<histogramName<<endl;
+	//cout<<"pre-histogram name: "<<preHistogramName<<endl;
+        cout<<"histtau21 name:"<<histTau21HistogramName<<endl;
+
         histFilling+=histogramName;
+	preCutHistFilling+=preHistogramName;
+        histTau21Filling+=histTau21HistogramName;
+
 //creating the weighting option
+	preCutWeight="weight*";
         weighting="(tau21JDDT<0.47)*weight*";
+        histTau21Weight="(tau21JDDT<0.47)*weight*";
         if (i<101){
             weighting+="pdfErr_Weight_";
             weighting+=to_string(i);
+            weighting+="*";
+            weighting+=to_string(pdfWeights.at(0));
+            weighting+="/";
+            weighting+=to_string(pdfWeights.at(i));
+	    preCutWeight+="pdfErr_Weight_";
+            preCutWeight+=to_string(i);
+            /*
+            preCutWeight+="*";
+            preCutWeight+=to_string(pdfWeights.at(0));
+            preCutWeight+="/";
+            preCutWeight+=to_string(pdfWeights.at(i));
+            */
+            histTau21Weight+="pdfErr_Weight_";
+            histTau21Weight+=to_string(i);
         }
         else if (i==101){
+	    preCutWeight+="pdfweightVS_Ct4";
+            /*
+            preCutWeight+="*";
+            preCutWeight+=to_string(pdfWeights.at(0));
+	    
+            preCutWeight+="/";
+            preCutWeight+=to_string(pdfWeights.at(i));
+*/
             weighting+="pdfweightVS_Ct4";
-        }
+             weighting+="*";
+            weighting+=to_string(pdfWeights.at(0));
+            weighting+="/";
+            weighting+=to_string(pdfWeights.at(i));
+
+            histTau21Weight+="pdfweightVS_Ct4";
+       }
         else if (i==102){
             weighting+="pdfweightVS_MMHT";
+            weighting+="*";
+            weighting+=to_string(pdfWeights.at(0));
+            weighting+="/";
+            weighting+=to_string(pdfWeights.at(i));
+
+	    preCutWeight+="pdfweightVS_MMHT";
+            histTau21Weight+="pdfweightVS_MMHT";
+     /*       preCutWeight+="*";
+            preCutWeight+=to_string(pdfWeights.at(0));
+            preCutWeight+="/";
+            preCutWeight+=to_string(pdfWeights.at(i));*/
         }
 
         //Print out the Hist filling and weighting option 
         cout<<"Hist Filling: "<<histFilling<<endl;
         cout<<"weighting: "<<weighting<<endl;
+
+	cout<<"preCut hist Filling: "<<preCutHistFilling<<endl;
+	cout<<"preCut weighting:" <<preCutWeight<<endl;
         
+        cout<<"Tau21 hist Filling: "<<histTau21Filling<<endl;
+        cout<<"Tau21 hist Weighting:"<<histTau21Weight<<endl;
         //Actually doing the drawing
         Tree->Draw(histFilling.c_str(), weighting.c_str(), "goff");
+	Tree->Draw(preCutHistFilling.c_str(), preCutWeight.c_str(), "goff");
+        Tree->Draw(histTau21Filling.c_str(), histTau21Weight.c_str(),"goff");
+/*
         hist[i]=(TH1F*)(gROOT->FindObject(histogramName.c_str()));
+	preCutHist[i]=(TH1F*)(gROOT->FindObject(preHistogramName.c_str()));
+        histTau21[i]= (TH1F*)(gROOT->FindObject(histTau21Name.c_str()));*/
     }
-
-
 //Drawing the histogram 
     // Setting the canvas name 
     string histTitle=varInput;
@@ -222,14 +300,21 @@ int main(int argc, char* argv[]){
     }
     //Declaring and initializing the canvas
     TCanvas *c1= new TCanvas();
-
+    double histScale;
     //Drawing the histogram
     for (int i=0; i<103; i++){
-        cout<<(hist[i]->Integral())/hist[0]->Integral()<<endl;
+        //cout<<"Integral for Tau21 hist [0]"<<histTau21[0]->Integral()<<endl;
         if (i==0){
             hist[0]->Draw();
+
+	    cout<<histTau21[i]->Integral()/histTau21[0]->Integral()<<endl;
         }
         else{
+            histScale=(preCutHist[0]->Integral())/(preCutHist[i]->Integral());
+    
+	    preCutHist[i]->Scale(histScale);
+        histTau21[i]->Scale(histScale);
+        cout<<hist[i]->Integral()/hist[0]->Integral()<<endl;
             hist[i]->Draw("same");
         }
         hist[0]->Draw("same");
