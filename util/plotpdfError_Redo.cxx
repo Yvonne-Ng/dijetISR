@@ -25,6 +25,14 @@ using std::vector;
 
 #define totalHistNum 104
 
+//For variable displayed = tau21JDDT
+#if 1
+#define totalBins 60
+#define binMax 0.9
+#define binMin 0.
+#endif
+
+
 void usage(){
     cout<<"Usage:" <<"plotPdfErr" <<"<variable name> <filename> <weight.txt>" <<endl;
 
@@ -126,9 +134,9 @@ int main(int argc, char* argv[]){
 	}
 
                cout<<"hist Tau21 Name: "<<histTau21Name<<endl;
-            hist[j]= new TH1F(histName.c_str(), histName.c_str(), 60,0,0.9); //Range for tau21
-	    preCutHist[j]=new TH1F(preCutHistName.c_str(), preCutHistName.c_str(), 60,0,0.9);
-            histTau21[j]= new TH1F(histTau21Name.c_str(), histTau21Name.c_str(),60,0,0.9);
+            hist[j]= new TH1F(histName.c_str(), histName.c_str(), totalBins,binMin,binMax); //Range for tau21
+	    preCutHist[j]=new TH1F(preCutHistName.c_str(), preCutHistName.c_str(),  totalBins,binMin,binMax);
+            histTau21[j]= new TH1F(histTau21Name.c_str(), histTau21Name.c_str(),totalBins,binMin,binMax);
             hist[j]->Sumw2();
             preCutHist[j]->Sumw2();
             histTau21[j]->Sumw2();
@@ -264,13 +272,12 @@ int main(int argc, char* argv[]){
         Tree->Draw(histFilling.c_str(), weighting.c_str(), "goff");
 	Tree->Draw(preCutHistFilling.c_str(), preCutWeight.c_str(), "goff");
         Tree->Draw(histTau21Filling.c_str(), histTau21Weight.c_str(),"goff");
-/*
-        hist[i]=(TH1F*)(gROOT->FindObject(histogramName.c_str()));
-	preCutHist[i]=(TH1F*)(gROOT->FindObject(preHistogramName.c_str()));
-        histTau21[i]= (TH1F*)(gROOT->FindObject(histTau21Name.c_str()));*/
     }
+//Adding the histogram bin loop to find the min and  
+    //for (int i=0; i
+
 //Drawing the histogram 
-    // Setting the canvas name 
+    // Setting e canvas name 
     string histTitle=varInput;
     histTitle+=" with pdfweighting";
 
