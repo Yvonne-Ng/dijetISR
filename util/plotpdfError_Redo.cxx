@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
 //Reading the weight 
     vector<double> pdfWeights=reading_weights(weightFileName);
 
-    TH1F * hist[totalHistName];
+    TH1F * hist[totalHistNum];
 //Initializing histograms
      string histName;
      string preCutHistName;
