@@ -23,6 +23,8 @@ using namespace std;
 using std::string;
 using std::vector;
 
+#define totalHistNum 104
+
 void usage(){
     cout<<"Usage:" <<"plotPdfErr" <<"<variable name> <filename> <weight.txt>" <<endl;
 
@@ -83,6 +85,7 @@ int main(int argc, char* argv[]){
 //Reading the weight 
     vector<double> pdfWeights=reading_weights(weightFileName);
 
+    TH1F * hist[totalHistName];
 //Initializing histograms
      string histName;
      string preCutHistName;
