@@ -53,14 +53,14 @@ vector<double> reading_weights(string & weightInputName){
 
 int main(int argc, char* argv[]){
     //gROOT->Reset();
-    if (argc!=3){
+    if (argc!=4){
         cout<<"Usage:" <<argv[0] <<"<variable name> <filename>" <<endl;
         return 1;
     }
 
     //Finding the branch name corresponding to input
     string varInput= argv[1];
-    if (varInput!="tau21JDDT" && varInput!="massJ"){
+    if (varInput!="tau21JDDT" && varInput!="massJ" && varInput != "LeadingJetPT"){
         cout<<"Usage:"<<argv[0] <<"<variable name> <filename>"<<endl;
         cout<<"Variable can only be \"tau21JDDT\" or \"massJ\""<<endl;
         return 1;
@@ -76,33 +76,49 @@ int main(int argc, char* argv[]){
     inputFile = TFile::Open(inputFileName.c_str());
     //Declare input tree
      TTree *Tree;
-    //Declare histograms
-     TH1F *hist[104];
 
-    //Initializing histograms
+//Input Weight File
+    string weightFileName=argv[3]; 
+    
+//Reading the weight 
+    vector<double> pdfWeights=reading_weights(weightFileName);
+
+//Initializing histograms
      string histName;
-     for (int j=0; j<104 ; j++){
+     string preCutHistName;
+     string histTau21Name;
+ 
+     for (int j=0; j<103 ; j++){
+        preCutHistName="preCut";
+        histTau21Name="Tau21";
         cout<<"j number: "<<j<<endl;
         if (j==0){
             histName="Nominal";
+	    preCutHistName+="Nominal";
+            histTau21Name+="Nominal";
         }   
         else if (j>0 && j<101){
             histName="pdfIntErr";
             histName+=to_string(j);
+	    preCutHistName+="pdfIntErr";
+	    preCutHistName+=to_string(j);
+            histTau21Name+="pdfIntErr";
+            histTau21Name+=to_string(j);
         }
         else if (j==101){
             histName="pdfExtVS_CT4";
+	    preCutHistName+="pdfExtVS_CT4";
+            histTau21Name+="pdfExtVS_CT4";
         }
         else if (j==102){
             histName="pdfExtVS_MMHT";
+	    preCutHistName+="pdfExtVS_MMHT";
+            histTau21Name+="pdfExtVS_MMHT";
         }
-        /*else {
-            cout<<"histogram number out of range"<<endl;
-            return 2;
-        }*/
-        else if (j==103){
-            break;
-        }
+	else if (j==103){
+	
+	}
+
             cout<<"Histogram name: "<<histName<<endl;
             hist[j]= new TH1F(histName.c_str(), histName.c_str(), 45,0,0.9); //Range for tau21
             hist[j]->Sumw2();
