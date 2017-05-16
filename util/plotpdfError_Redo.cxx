@@ -22,6 +22,17 @@ using namespace std;
 using std::string;
 using std::vector;
 
+void usage(){
+    cout<<"Usage:" <<"plotPdfErr" <<"<variable name> <filename> <weight.txt>" <<endl;
+
+}
+
+void variableUsage(){
+    
+        cout<<"Variable can only be \"tau21JDDT\" or \"massJ\""<<endl;
+}
+
+
 int main(int argc, char* argv[]){
     //gROOT->Reset();
     if (argc!=3){
