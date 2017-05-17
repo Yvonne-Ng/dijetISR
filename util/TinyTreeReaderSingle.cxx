@@ -54,7 +54,7 @@ int main (int argc, char *argv[]){
     Tree= (TTree*)inputFile->Get("TinyTree");
 
 //Declaring input tree varaibles
-    float mass, tau21P, x1,x2, q, weight;
+    float mass, tau21P, x1,x2, q, weight, ptj, ptJUG;
     int pdfId1,pdfId2;
 
 //Associating input variables with branch address in inTree
@@ -66,6 +66,9 @@ int main (int argc, char *argv[]){
     Tree->SetBranchAddress("x2", &x2);
     Tree->SetBranchAddress("q", &q);
     Tree->SetBranchAddress("weight", &weight);
+    Tree->SetBranchAddress("ptj", &ptj);
+    Tree->SetBranchAddress("ptJ_ungroomed", &ptJUG);
+
 
 //Adding the LHA PDF stuff
 //the Nominal pdf Set
@@ -119,6 +122,8 @@ int main (int argc, char *argv[]){
         output_tree->add_scalar("tau21JDDT", tau21P);
         output_tree->add_scalar("massJ", mass);
         output_tree->add_scalar("weight", weight);
+        output_tree->add_scalar("ptj", ptj);
+        output_tree->add_scalar("ptJUG", ptJUG);
         output_tree->Fill();  
     
     }
