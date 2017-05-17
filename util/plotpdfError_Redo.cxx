@@ -23,7 +23,7 @@ using namespace std;
 using std::string;
 using std::vector;
 
-#define totalHistNum 104
+#define totalHistNum 105
 
 //For variable displayed = tau21JDDT
 #if 1
@@ -312,6 +312,24 @@ int main(int argc, char* argv[]){
     
     //Drawing the histograms
     //the Histograms are already reweighted above,
+    float scl=binMax/totalBins;
+    for (int i =0; i< totalBins; i++) //Looping through bin numbers 
+    {
+        float maxEntriesinBin=0;
+        float minEntriesinBin=99999999;
+        for (int j=0; j<103; j++) //Looping through the number of histograms
+        {
+            float testpt=hist[j]->GetBinContent(i);
+            if (testpt>maxEntriesinBin)
+                maxEntriesinBin=testpt;
+            if (testpt<minEntriesinBin)
+                minEntriesinBin=testpt;
+        }   
+        hist[103]->Fill(scl*i, maxEntriesinBin); 
+        hist[104]->Fill(scl*i, minEntriesinBin);
+        
+    }
+
     //histTau21 needs to be furthre reweighted from the result of preCuthistogram
     TCanvas *c1= new TCanvas();
     double histScale;
