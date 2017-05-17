@@ -27,8 +27,8 @@ using std::vector;
 
 //For variable displayed = tau21JDDT
 #if 1
-#define totalBins 60
-#define binMax 0.9
+#define totalBins 140
+#define binMax 1400
 #define binMin 0.
 #endif
 
@@ -40,7 +40,7 @@ void usage(){
 
 void variableUsage(){
     
-        cout<<"Variable can only be \"tau21JDDT\" or \"massJ\""<<endl;
+        cout<<"Variable can only be \"tau21JDDT\" or \"massJ\ or \"ptj\" "<<endl;
 }
 
 //Take in weight file name, output vector of weights
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
 
     //Finding the branch name corresponding to input
     string varInput= argv[1];
-    if (varInput!="tau21JDDT" && varInput!="massJ" && varInput != "LeadingJetPT"){
+    if (varInput!="tau21JDDT" && varInput!="massJ" && varInput != "ptj"){
         cout<<"Usage:"<<argv[0] <<"<variable name> <filename>"<<endl;
         cout<<"Variable can only be \"tau21JDDT\" or \"massJ\""<<endl;
         return 1;
