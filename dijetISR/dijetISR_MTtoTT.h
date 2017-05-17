@@ -62,6 +62,14 @@ class dijetISR_MTtoTT : public xAH::Algorithm {
         int in_NPV; //!
         float in_avgmu; //!
         int in_nJ; //!
+
+        //pdf intree variables 
+        int in_pdfId1;
+        int in_pdfId2;
+        float in_x1;
+        float in_x2;
+        float in_q;
+
         std::vector<float> *in_EJ; //!
         std::vector<float> *in_ptJ; //!
         std::vector<float> *in_etaJ; //!
@@ -89,6 +97,9 @@ class dijetISR_MTtoTT : public xAH::Algorithm {
         std::vector<float> *in_ptj; //!
         std::vector<float> *in_etaj; //!
         std::vector<float> *in_phij; //!
+
+
+
 
         // output tree branches
         TTree *m_outTree; //!
@@ -134,6 +145,15 @@ class dijetISR_MTtoTT : public xAH::Algorithm {
         float out_dEtaJj; //!
         float out_dPhiJj; //!
         float out_dRJj; //!
+
+        //output tree variables 
+        int out_pdfId1;
+        int out_pdfId2;
+        float out_x1;
+        float out_x2;
+        float out_q;
+
+
 
         // MetaData
         TH1F *m_metaData; //!

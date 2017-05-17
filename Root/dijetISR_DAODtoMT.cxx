@@ -119,6 +119,8 @@ EL::StatusCode dijetISR_DAODtoMT::executeSingle(std::string resolvedSys, std::st
     else {
         eventInfo->auxdecor<float>("weight") = 1.;
     }
+    //
+    //float pdfId2-eventInfo->pdf()
 
     // get fat jets
     const xAOD::JetContainer *fatJets = 0;

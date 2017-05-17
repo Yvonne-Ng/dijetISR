@@ -166,7 +166,13 @@ EL::StatusCode dijetISR_MTtoTT::execute() {
     // jet selection
     if (m_doJets && b_passJetTrigger && in_nJ > 0) {
         int iJ = 0;
-
+    //
+        //pdf variables
+        out_pdfId1=in_pdfId1;
+        out_pdfId2=in_pdfId2;
+        out_x1=in_x1;
+        out_x2=in_x2;
+        out_q=in_q;
         // J selection - leave all uncommented for highestPt
         
         /*
@@ -230,7 +236,8 @@ EL::StatusCode dijetISR_MTtoTT::execute() {
         //out_mJ_softDrop = in_mJ_softDrop->at(iJ);
         //out_ptJ_softDrop = in_ptJ_softDrop->at(iJ);
         //out_tau21J_softDrop = in_tau21J_softDrop->at(iJ);
-        
+       
+
         // J pt > 450
         if (!(tlvJ.Pt() > 450.)) goto postj;
 
@@ -323,6 +330,7 @@ postj: ;
         m_outTree->Fill();
     }
 
+
 postgamma: ;
 
     return EL::StatusCode::SUCCESS;
@@ -355,6 +363,13 @@ void dijetISR_MTtoTT::initializeVectors() {
     in_ptj = 0;
     in_etaj = 0;
     in_phij = 0;
+
+    //initialize pdf variables
+    in_pdfId1=0;
+    in_pdfId2=0;
+    in_x1=0;
+    in_x2=0;
+    in_q=0;
 }
 
 void dijetISR_MTtoTT::initializeInTree() {
@@ -377,6 +392,13 @@ void dijetISR_MTtoTT::initializeInTree() {
     wk()->tree()->SetBranchAddress("fatjet_pt_ungroomed", &in_ptJ_ungroomed);
     wk()->tree()->SetBranchAddress("fatjet_tau21_wta_ungroomed", &in_tau21J_ungroomed);
     wk()->tree()->SetBranchAddress("fatjet_nTracks", &in_ntrk);
+
+    //linking pdf variables
+    wk()->tree()->SetBranchAddress("pdfId1", &in_pdfId1);
+    wk()->tree()->SetBranchAddress("pdfId2", &in_pdfId2);
+    wk()->tree()->SetBranchAddress("x1", &in_x1);
+    wk()->tree()->SetBranchAddress("x2", &in_x2);
+    wk()->tree()->SetBranchAddress("q", &in_q);
     //wk()->tree()->SetBranchAddress("fatjet_tam", &in_mJ_trackAssisted);
     //wk()->tree()->SetBranchAddress("fatjet_sd_m", &in_mJ_softDrop);
     //wk()->tree()->SetBranchAddress("fatjet_sd_pt", &in_ptJ_softDrop);
@@ -420,6 +442,14 @@ void dijetISR_MTtoTT::initializeOutTree() {
     m_outTree->Branch("tau21J_ungroomed", &out_tau21J_ungroomed, "tau21J_ungroomed/F");
     m_outTree->Branch("tau21JDDT", &out_tau21JDDT, "tau21JDDT/F");
     m_outTree->Branch("ntrk", &out_ntrk, "ntrk/I");
+
+    //Linking outTree variables 
+    m_outTree->Branch("pdfId1", &out_pdfId1, "pdfId1/I");
+    m_outTree->Branch("pdfId2", &out_pdfId2, "pdfId2/I");
+    m_outTree->Branch("x1", &out_x1,"x1/F");
+    m_outTree->Branch("x2", &out_x2,"x2/F");
+    m_outTree->Branch("q", &out_q,"q/F");
+
     //m_outTree->Branch("mJ_trackAssisted", &out_mJ_trackAssisted, "mJ_trackAssited/F");
     //m_outTree->Branch("mJ_softDrop", &out_mJ_softDrop, "mJ_softDrop/F");
     //m_outTree->Branch("ptJ_softDrop", &out_ptJ_softDrop, "ptJ_softDrop/F");
@@ -511,6 +541,13 @@ void dijetISR_MTtoTT::resetBranches() {
         out_dEtaJj = -999;
         out_dPhiJj = -999;
         out_dRJj = -999;
+
+        //initializing outtree pdf variables
+        out_pdfId1=-999;
+        out_pdfId2=-999;
+        out_x1=-999;
+        out_x2=-999;
+        out_q=-999;
 }
 
 bool dijetISR_MTtoTT::passPhotonTrigger(int runNumber) {

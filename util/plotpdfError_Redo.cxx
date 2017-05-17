@@ -128,7 +128,7 @@ int main(int argc, char* argv[]){
 	        preCutHistName+="pdfExtVS_MMHT";
             histTau21Name+="pdfExtVS_MMHT";
         }
-	else if (j==103){
+	else if (j==105){
         cerr<<"histogram naming out of bound"<<endl;
 
 	}
@@ -141,6 +141,11 @@ int main(int argc, char* argv[]){
             preCutHist[j]->Sumw2();
             histTau21[j]->Sumw2();
      }
+
+     hist[103]= new TH1F("Error Max", "Error Max", totalBins, binMin, binMax);
+     hist[104]= new TH1F("Error Min", "Error Min", totalBins, binMin, binMax);
+     hist[103]->Sumw2();
+     hist[104]->Sumw2();
 
     //Opening the input TTree
     Tree= (TTree*)inputFile->Get("output");
@@ -190,16 +195,15 @@ int main(int argc, char* argv[]){
         }
         else if (i==102){
             histogramName="pdfExtVS_MMHT";
-	    preHistogramName+="pdfExtVS_MMHT";
+	        preHistogramName+="pdfExtVS_MMHT";
             histTau21HistogramName+="pdfExtVS_MMHT";
-
         }
         //cout<<"histogram Name: "<<histogramName<<endl;
 	//cout<<"pre-histogram name: "<<preHistogramName<<endl;
         cout<<"histtau21 name:"<<histTau21HistogramName<<endl;
 
         histFilling+=histogramName;
-	preCutHistFilling+=preHistogramName;
+	    preCutHistFilling+=preHistogramName;
         histTau21Filling+=histTau21HistogramName;
 
 //creating the weighting option
@@ -275,7 +279,7 @@ int main(int argc, char* argv[]){
     }
 //Adding the histogram bin loop to find the min and  
     //for (int i=0; i
-
+cout<<"test pt1"<<endl;
 //Drawing the histogram 
     // Setting e canvas name 
     string histTitle=varInput;
@@ -288,31 +292,16 @@ int main(int argc, char* argv[]){
     setHistTitle+="Event #";
     hist[0]->SetTitle(setHistTitle.c_str());
 
-    //Setting line color
-    for (int i=0; i<103; i++){
-        
-        if (i==0){
-            hist[0]->SetLineColor(1);
-        }
-        else if (i<101){
-            hist[i]->SetLineColor(kPink-4);
-        }
-        else if (i==101){
-            hist[i]->SetLineColor(kGreen);
-        }
-        else if (i==102){
-            hist[i]->SetLineColor(kBlue);
-        }
         /*else {
             cout<<"histSetColor out of range. aborted"<<endl;
             return 3;
         }   */
-    }
+cout<<"test point 2"<<endl;    
     //Declaring and initializing the canvas
     
     //Drawing the histograms
     //the Histograms are already reweighted above,
-    float scl=binMax/totalBins;
+    float scl=(binMax-binMin)/totalBins;
     for (int i =0; i< totalBins; i++) //Looping through bin numbers 
     {
         float maxEntriesinBin=0;
@@ -325,11 +314,35 @@ int main(int argc, char* argv[]){
             if (testpt<minEntriesinBin)
                 minEntriesinBin=testpt;
         }   
-        hist[103]->Fill(scl*i, maxEntriesinBin); 
-        hist[104]->Fill(scl*i, minEntriesinBin);
+        hist[103]->Fill(scl*(i-0.5), maxEntriesinBin); 
+        hist[104]->Fill(scl*(i-0.5), minEntriesinBin);
         
     }
-
+cout<<"test point 3 "<<endl;
+    //Setting line color
+    for (int i=0; i<105; i++){
+        
+        if (i==0){
+            hist[0]->SetLineColor(1);
+        }
+        else if (i<101){
+            hist[i]->SetLineColor(kPink-4);
+        }
+        else if (i==101){
+            hist[i]->SetLineColor(kGreen);
+        }
+        else if (i==102)
+            hist[i]->SetLineColor(kBlue);
+        else if (i==103){
+            hist[i]->SetLineColor(kRed);
+            hist[i]->SetMarkerStyle(1);
+                    }
+        else if (i==104){
+            hist[i]->SetLineColor(kBlue);
+            hist[i]->SetMarkerStyle(1);
+            }
+        }
+cout<<"test point 4"<<endl;
     //histTau21 needs to be furthre reweighted from the result of preCuthistogram
     TCanvas *c1= new TCanvas();
     double histScale;
@@ -347,11 +360,11 @@ int main(int argc, char* argv[]){
 	    preCutHist[i]->Scale(histScale);
         histTau21[i]->Scale(histScale);
         cout<<hist[i]->Integral()/hist[0]->Integral()<<endl;
-            hist[i]->Draw("same");
+        hist[i]->Draw("same");
         }
         hist[0]->Draw("same");
     }
-
+cout<<"test point 5"<<endl;
     //Adding the legend 
     TLegend *leg = new TLegend(0.62,0.7,0.98,0.95);
     leg->AddEntry(hist[0],"nominal","l");
@@ -361,12 +374,31 @@ int main(int argc, char* argv[]){
 
     //Drawing the legend
     leg->Draw("same");
+cout<<"test point5 "<<endl;
+//Canvas that draws the nominal and the rest and print out the entries number
+    
+    TCanvas * c2 = new TCanvas();
+    hist[0]->Draw();
+    hist[103]->Draw("hist same");
+    hist[104]->Draw("hist same");
 
+    TLegend *leg2 = new TLegend(0.62,0.7,0.98,0.95);
+    leg2->AddEntry(hist[0],"nominal","l");
+    leg2->AddEntry(hist[103],"Max of bin in int/ext pdf sets","l");
+    leg2->AddEntry(hist[104],"Min of each bin in int/ext pdf sets", "l");
+
+    leg2->Draw();
     //saving the file as a pdf 
     string pdfName=inputFileName+".pdf";
     string macroName=inputFileName+".C";
+
+    string pdfName2=inputFileName+"maxNmin.pdf";
+    string macroName2= inputFileName +"maxNmin.C";
     c1->SaveAs(pdfName.c_str());
     c1->SaveAs(macroName.c_str());
+
+    c2->SaveAs(pdfName2.c_str());
+    c2->SaveAs(macroName2.c_str());
     return 0;
 
     }   
