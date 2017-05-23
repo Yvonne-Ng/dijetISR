@@ -18,6 +18,7 @@
 #include "TFile.h"
 #include "TROOT.h"
 #include <fstream>
+#include "TLine.h"
 
 using namespace std;
 using std::string;
@@ -70,9 +71,9 @@ int main(int argc, char* argv[]){
 
     //Finding the branch name corresponding to input
     string varInput= argv[1];
-    if (varInput!="tau21JDDT" && varInput!="massJ" && varInput != "ptj"){
+    if (varInput!="tau21JDDT" && varInput!="massJ" && varInput != "ptj" && varInput != "ptJUG"){
         cout<<"Usage:"<<argv[0] <<"<variable name> <filename>"<<endl;
-        cout<<"Variable can only be \"tau21JDDT\" or \"massJ\""<<endl;
+        cout<<"Variable can only be \"tau21JDDT\" or \"massJ\"or \"ptj\" or \"ptJUG\""<<endl;
         return 1;
     }
     
@@ -130,12 +131,11 @@ int main(int argc, char* argv[]){
         }
 	else if (j==105){
         cerr<<"histogram naming out of bound"<<endl;
-
 	}
 
-               cout<<"hist Tau21 Name: "<<histTau21Name<<endl;
+           cout<<"hist Tau21 Name: "<<histTau21Name<<endl;
             hist[j]= new TH1F(histName.c_str(), histName.c_str(), totalBins,binMin,binMax); //Range for tau21
-	    preCutHist[j]=new TH1F(preCutHistName.c_str(), preCutHistName.c_str(),  totalBins,binMin,binMax);
+    	    preCutHist[j]=new TH1F(preCutHistName.c_str(), preCutHistName.c_str(),  totalBins,binMin,binMax);
             histTau21[j]= new TH1F(histTau21Name.c_str(), histTau21Name.c_str(),totalBins,binMin,binMax);
             hist[j]->Sumw2();
             preCutHist[j]->Sumw2();
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]){
         histFilling+=">>";
         histTau21Filling=varInput;
         histTau21Filling+=">>";
-	string preHistogramName="preCut";
+    	string preHistogramName="preCut";
         string histTau21HistogramName="Tau21";
         if (i==0){
             histogramName="Nominal";
@@ -241,7 +241,7 @@ int main(int argc, char* argv[]){
             preCutWeight+=to_string(pdfWeights.at(i));
 */
             weighting+="pdfweightVS_Ct4";
-             weighting+="*";
+            weighting+="*";
             weighting+=to_string(pdfWeights.at(0));
             weighting+="/";
             weighting+=to_string(pdfWeights.at(i));
@@ -345,6 +345,7 @@ cout<<"test point 3 "<<endl;
 cout<<"test point 4"<<endl;
     //histTau21 needs to be furthre reweighted from the result of preCuthistogram
     TCanvas *c1= new TCanvas();
+
     double histScale;
     //Drawing the histogram
     for (int i=0; i<103; i++){
@@ -374,10 +375,24 @@ cout<<"test point 5"<<endl;
 
     //Drawing the legend
     leg->Draw("same");
+
+     
 cout<<"test point5 "<<endl;
 //Canvas that draws the nominal and the rest and print out the entries number
     
     TCanvas * c2 = new TCanvas();
+//    Upper plot will be in pad1
+    TPad *pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+    pad1->SetBottomMargin(0); // Upper and lower plot are joined
+    pad1->SetGridx();         // Vertical grid
+    pad1->Draw();             // Draw the upper pad: pad1
+       TPad *pad2 = new TPad("pad2", "pad2", 0, 0.00, 1, 0.3);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0.2);
+    pad2->SetGridx(); // vertical grid
+    pad2->Draw();
+    pad1->cd();               // pad1 becomes the current pad
+
     hist[0]->Draw();
     hist[103]->Draw("hist same");
     hist[104]->Draw("hist same");
@@ -389,13 +404,41 @@ cout<<"test point5 "<<endl;
 
     leg2->Draw();
 
+  
+    //Define the Ratio plot
+    TH1F * h103Ratio = (TH1F*) hist[103]->Clone("h103Ratio");
+    TH1F * h104Ratio = (TH1F*) hist[104]->Clone("h104Ratio");   
+    TLine *line =  new TLine(0, 1, 1400, 1);
+    h103Ratio->Sumw2();
+    h104Ratio->Sumw2();
+    h103Ratio->Divide(hist[0]);
+    h104Ratio->Divide(hist[0]);
+    h103Ratio->Sumw2();
+    h104Ratio->Sumw2();
+    h103Ratio->SetMinimum(0.2);
+    h103Ratio->SetMaximum(1.80);
+    h103Ratio->SetStats(0);
+  
+    h103Ratio->SetLineColor(kRed);
+    h104Ratio->SetLineColor(kBlue);
+    
+    h103Ratio->SetTitle("");
+    h103Ratio->GetYaxis()->SetTitle("ratio max or min divided by nominal");
+    h103Ratio->GetXaxis()->SetTitle("pt of leading AkT4 Jet");
+    h103Ratio->GetYaxis()->SetLabelFont(43);
+    h104Ratio->GetXaxis()->SetLabelFont(43);
+    pad2->cd();
+    h103Ratio->Draw("hist");
+    h104Ratio->Draw("hist same");
+    line->Draw("same");
+    //h103Ratio->GetY
     //cout<<"
     //saving the file as a pdf 
-    string pdfName=inputFileName+".pdf";
-    string macroName=inputFileName+".C";
+    string pdfName=inputFileName+varInput+".pdf";
+    string macroName=inputFileName+varInput+".C";
 
-    string pdfName2=inputFileName+"maxNmin.pdf";
-    string macroName2= inputFileName +"maxNmin.C";
+    string pdfName2=inputFileName+varInput+"maxNmin.pdf";
+    string macroName2= inputFileName +varInput+"maxNmin.C";
 
     string outFileName="MaxMinPdfPacket";
     outFileName+=".txt";
