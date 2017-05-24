@@ -366,6 +366,8 @@ cout<<"test point 4"<<endl;
         //hist[i]->Draw("hist same");
         }
         //hist[0]->Draw("same");
+        hist[101]->Draw("hist same");
+        hist[102]->Draw("hist same");
     }
 cout<<"test point 5"<<endl;
     //Adding the legend 
