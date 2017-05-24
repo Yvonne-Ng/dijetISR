@@ -216,10 +216,10 @@ int main(int argc, char* argv[]){
         if (i<101){
             weighting+="pdfErr_Weight_";
             weighting+=to_string(i);
-            weighting+="*";
-            weighting+=to_string(pdfWeights.at(0));
-            weighting+="/";
-            weighting+=to_string(pdfWeights.at(i));
+            //weighting+="*";
+            //weighting+=to_string(pdfWeights.at(0));
+            //weighting+="/";
+            //weighting+=to_string(pdfWeights.at(i));
 	    preCutWeight+="pdfErr_Weight_";
             preCutWeight+=to_string(i);
             /*
@@ -241,20 +241,22 @@ int main(int argc, char* argv[]){
             preCutWeight+=to_string(pdfWeights.at(i));
 */
             weighting+="pdfweightVS_Ct4";
+            /*
             weighting+="*";
             weighting+=to_string(pdfWeights.at(0));
             weighting+="/";
             weighting+=to_string(pdfWeights.at(i));
 
-            histTau21Weight+="pdfweightVS_Ct4";
+            histTau21Weight+="pdfweightVS_Ct4";*/
        }
         else if (i==102){
             weighting+="pdfweightVS_MMHT";
+        /*
             weighting+="*";
             weighting+=to_string(pdfWeights.at(0));
             weighting+="/";
             weighting+=to_string(pdfWeights.at(i));
-
+*/
 	    preCutWeight+="pdfweightVS_MMHT";
             histTau21Weight+="pdfweightVS_MMHT";
      /*       preCutWeight+="*";
@@ -361,9 +363,9 @@ cout<<"test point 4"<<endl;
 	    preCutHist[i]->Scale(histScale);
         histTau21[i]->Scale(histScale);
         cout<<hist[i]->Integral()/hist[0]->Integral()<<endl;
-        hist[i]->Draw("same");
+        hist[i]->Draw("hist same");
         }
-        hist[0]->Draw("same");
+        //hist[0]->Draw("same");
     }
 cout<<"test point 5"<<endl;
     //Adding the legend 
