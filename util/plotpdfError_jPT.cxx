@@ -363,7 +363,7 @@ cout<<"test point 4"<<endl;
 	    preCutHist[i]->Scale(histScale);
         histTau21[i]->Scale(histScale);
         cout<<hist[i]->Integral()/hist[0]->Integral()<<endl;
-        hist[i]->Draw("hist same");
+        //hist[i]->Draw("hist same");
         }
         //hist[0]->Draw("same");
     }
