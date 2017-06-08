@@ -1,3 +1,9 @@
+///////////////////////////
+//          Jet Channel Signals 
+//          Plots the tau21P distribution of the different PDF sets
+//          ali different pdf Errors sets
+////////////////////////////////
+
 #include "TH1F.h"
 #include "THStack.h"
 #include "TTree.h"
@@ -360,9 +366,9 @@ cout<<"test point 4"<<endl;
 	    preCutHist[i]->Scale(histScale);
         histTau21[i]->Scale(histScale);
         cout<<hist[i]->Integral()/hist[0]->Integral()<<endl;
-        hist[i]->Draw("same");
+        hist[i]->Draw("hist same");
         }
-        hist[0]->Draw("same");
+        //hist[0]->Draw("same");
     }
 cout<<"test point 5"<<endl;
     //Adding the legend 
@@ -388,12 +394,25 @@ cout<<"test point5 "<<endl;
     leg2->AddEntry(hist[104],"Min of each bin in int/ext pdf sets", "l");
 
     leg2->Draw();
+
+    //cout<<"
     //saving the file as a pdf 
     string pdfName=inputFileName+".pdf";
     string macroName=inputFileName+".C";
 
     string pdfName2=inputFileName+"maxNmin.pdf";
     string macroName2= inputFileName +"maxNmin.C";
+
+    string outFileName="MaxMinPdfPacket";
+    outFileName+=".txt";
+    ofstream outfile;
+    outfile.open(outFileName, std::ios_base::app);
+    double maxPercent= hist[103]->Integral()/hist[0]->Integral();
+    double minPercent = hist[104]->Integral()/hist[0]->Integral();
+
+    outfile<<inputFileName<<"    "<<maxPercent<<"    "<<minPercent<<"    "<<(maxPercent-minPercent);
+
+    outfile.close();
     c1->SaveAs(pdfName.c_str());
     c1->SaveAs(macroName.c_str());
 

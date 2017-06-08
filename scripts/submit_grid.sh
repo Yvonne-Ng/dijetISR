@@ -3,18 +3,21 @@
 if [ -z $1 ]
 then
     echo "Suffix required!"
-    exit
+    #exit
 fi
 SUFFIX=$1
 
 if [ -z $2 ]
 then
     echo "Config file needed!"
-    exit
+    #exit
 fi
 CONFIG=$2
 
-PRUN="prun --optGridOutputSampleName=user.%nickname%.%in:name[1]%.%in:name[2]%.%in:name[3]%.${SUFFIX}"
+NAME="ywng"
+
+PRUN="prun --optGridOutputSampleName=user.${NAME}.%in:name[1]%.%in:name[2]%.%in:name[3]%.${SUFFIX}"
+#PRUN="prun --optGridOutputSampleName=user.%nickname%.%in:name[3]%.${SUFFIX}"
 
 if [ ! -z $3 ]
 then
@@ -39,7 +42,8 @@ fi
 #./xAODAnaHelpers/scripts/xAH_run.py --config ${CONFIG} --files dijetISR/etc/ZHad.EXOT18.list          --inputList --inputRucio --submitDir ${SUFFIX}_ZHad   --force --isMC ${PRUN}
 
 # ISRjet signal
-../../xAODAnaHelpers/scripts/xAH_run.py --config ${CONFIG} --files /lustre/SCRATCH/atlas/ywng/optimization_bkgnd/selection-laser/dijetISR/etc/signal.ISRjet.EXOT18.list --inputList --inputRucio --submitDir ${SUFFIX}_signal --force --isMC ${PRUN}
+../../xAODAnaHelpers/scripts/xAH_run.py --config ${CONFIG} --files /lustre/SCRATCH/atlas/ywng/optimization_bkgnd/selection-laser/dijetISR/etc/signal.ISRphoton.EXOT18.list --inputList --inputRucio --submitDir ${SUFFIX}_a --force --isMC ${PRUN} 
+
 
 # ttbar
 #./xAODAnaHelpers/scripts/xAH_run.py --config ${CONFIG} --files dijetISR/etc/ttbar.JETM6.list  --inputList --inputRucio --submitDir ${SUFFIX}_ttbar  --force --isMC ${PRUN}

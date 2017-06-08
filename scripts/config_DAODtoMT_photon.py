@@ -10,7 +10,7 @@ triggersList = [
 ]
 triggers = ",".join(triggersList)
 
-deriv = 'JETM6Kernel'
+deriv = 'EXOT18Kernel'
 
 c.setalg("BasicEventSelection", { "m_name"                  : "BasicEventSelection",
                                   "m_debug"                 : False,
@@ -66,7 +66,7 @@ c.setalg("JetSelector", { "m_name"                    : "FatJetSelector",
                           "m_useCutFlow"              : True,
                         } )
 
-c.setalg("PhotonCalibrator", { "m_name"                    : "PhotonCalibrator",
+"""c.setalg("PhotonCalibrator", { "m_name"                    : "PhotonCalibrator",
                                "m_inContainerName"         : "Photons",
                                "m_outContainerName"        : "CalibPhotons",
                                "m_outputAlgoSystNames"     : "Photons_Calib_Algo",
@@ -75,8 +75,33 @@ c.setalg("PhotonCalibrator", { "m_name"                    : "PhotonCalibrator",
                                "m_useAFII"                 : False,
                                "m_systName"                : "Nominal",
                                "m_systVal"                 : 0,
-                               "m_sort"                    : True
+                               "m_sort"                    : True,
+                               "m_conEffCalibPath"         : "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/PIDSF/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root", 
+                               "m_uncEffCalibPath"         : "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/PIDSF/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root"
+
+
                               } )
+"""
+c.setalg("PhotonCalibrator", { "m_name" : "PhotonCalibrator",
+                                #"m_debug" : debug, 
+                                "m_inContainerName" : "Photons",
+                                "m_outContainerName" : "Photons_Calib",
+                                "m_outputAlgoSystNames" : "Photons_Calib_Algo",
+                                "m_conEffCalibPath" : "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/PIDSF/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root",
+                                "m_uncEffCalibPath" : "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/PIDSF/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root",
+                                "m_conEffAFIICalibPath" : "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root",
+                                "m_uncEffAFIICalibPath" : "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root",
+                                "m_tightIDConfigPath" : "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMTightSelectorCutDefs.conf",
+                                "m_mediumIDConfigPath" : "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMMediumSelectorCutDefs.conf",
+                                "m_looseIDConfigPath" : "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMLooseSelectorCutDefs.conf",
+                                "m_esModel" : "es2016data_mc15c",
+                                "m_decorrelationModel" : "1NP_v1",
+                                "m_useAFII" : False,
+                               "m_systName" : "Nominal",
+                                "m_systVal" : 0,
+                                "m_sort" : True
+} )
+
 
 c.setalg("PhotonSelector", { "m_name"                    : "PhotonsSelector",
                              "m_inContainerName"         : "CalibPhotons",
@@ -99,7 +124,7 @@ c.setalg("dijetISR_DAODtoMT", { "m_doJets"               : False,
                                 "m_doPhotons"            : True,
                                 "m_fatJetContainerName"  : "SelFatJets",
                                 "m_photonContainerName"  : "SelPhotons",
-                                "m_eventInfoDetailStr"   : "pileup",
+                                "m_eventInfoDetailStr"   : "pileup truth",
                                 "m_trigDetailStr"        : "passTriggers",
                                 "m_fatJetDetailStr"      : "kinematic substructure",
                                 "m_photonDetailStr"      : "kinematic"
