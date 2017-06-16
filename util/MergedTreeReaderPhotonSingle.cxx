@@ -41,7 +41,7 @@ int main (int argc, char *argv[]){
     string delimiter="/";
     string arg1(argv[1]);
     string outputFileName= arg1.substr(0,arg1.find(delimiter));
-    outputFileName+="_photonNanotree.root";
+    outputFileName+="_photonNanotreetest.root";
 
 //Open Output TFile
   TFile *output_file = new TFile(outputFileName.c_str(),"RECREATE");
@@ -54,19 +54,25 @@ int main (int argc, char *argv[]){
     Tree= (TTree*)inputFile->Get("Nominal");
 
 //Declaring input tree varaibles
-    float mass, tau21P, x1,x2, q, weight, ptp, ptJUG;
+    float  x1,x2, q, mass, weightHolder;
     int pdfId1,pdfId2;
+    vector<float> *tau21P(nullptr);
+    vector<float> *fj_ptHolder(nullptr);
+    vector<float> *fj_EHolder(nullptr);
+    //vector<float> *weightHolder(nullptr);
+    vector<float> *ptpHolder(nullptr);
 
 //Associating input variables with branch address in inTree
-    Tree->SetBranchAddress("ph_m", &mass);
+    Tree->SetBranchAddress("fatjet_E",  &fj_EHolder);
+    Tree->SetBranchAddress("fatjet_pt", &fj_ptHolder);
     Tree->SetBranchAddress("fatjet_tau21_wta", &tau21P);
     Tree->SetBranchAddress("pdfId1", &pdfId1);
     Tree->SetBranchAddress("pdfId2", &pdfId2);
     Tree->SetBranchAddress("x1", &x1);
     Tree->SetBranchAddress("x2", &x2);
     Tree->SetBranchAddress("q", &q);
-    Tree->SetBranchAddress("weight", &weight);
-    Tree->SetBranchAddress("ph_pt", &ptp);
+    Tree->SetBranchAddress("weight", &weightHolder);
+    Tree->SetBranchAddress("ph_pt", &ptpHolder);
    // Tree->SetBranchAddress("ptJ_ungroomed", &ptJUG);
 
 
@@ -114,18 +120,34 @@ int main (int argc, char *argv[]){
         //Calculating the 2 external pdfs
         string strpdfErrCt4Weight="pdfweightVS_Ct4";
         string strpdfErrMMHTWeight="pdfweightVS_MMHT";
-
+        cout << tau21P << endl; 
         //Adding the two external pdfs to the output tree
         output_tree->add_scalar(strpdfErrCt4Weight, pdfwVsCt4);
         output_tree->add_scalar(strpdfErrMMHTWeight, pdfwVsMMHT);
+       
+        //Calculating tau21P
+        
+        mass=pow(fj_EHolder->at(0),2.0)-pow(fj_ptHolder->at(0),2.0);
+        cout<<"address of fj_EHolder: "<<fj_EHolder<<endl;
+        cout<<"address of fj_ptHolder: "<<fj_ptHolder<<endl;
+        cout<<"address of tau21P "<<tau21P<<endl;
+        
+        cout<<"mass value: "<<mass<<endl;
+
+        cout<<"weight: "<<weightHolder<<endl;
+
+        float rhoDDT=log(pow(mass, 2.0) / pow(fj_ptHolder->at(0), 1.0));
+        float tau21DDT=tau21P->at(0)+0.0936*(rhoDDT-1.5);
+
         //Adding physical variables to the nanoTree
-        output_tree->add_scalar("tau21JDDT", tau21P);
-        output_tree->add_scalar("massp", mass);
-        output_tree->add_scalar("weight", weight);
-        output_tree->add_scalar("ptj", ptp);
-        //eoutput_tree->add_scalar("ptJUG", ptJUG);
+        output_tree->add_scalar("tau21JDDT", tau21DDT);
+/*        output_tree->add_vector("tau21JDDT", *tau21P);
+        output_tree->add_vector("fj_E", *fj_EHolder);
+        output_tree->add_vector("fj_pt", *fj_ptHolder);
+      */  output_tree->add_scalar("weight", weightHolder);
+       
         output_tree->Fill();  
-    
+   
     }
 
   output_file->cd();

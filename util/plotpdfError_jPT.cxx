@@ -400,6 +400,9 @@ cout<<"test point5 "<<endl;
     hist[0]->Draw();
     hist[103]->Draw("hist same");
     hist[104]->Draw("hist same");
+    
+    cout<<"%difference ext 1 "<<(hist[103]->Integral()/hist[0]->Integral())-1<<endl;
+    cout<<"%differnce ext 2 "<<(hist[104]->Integral()/hist[0]->Integral())-1<<endl;
 
     TLegend *leg2 = new TLegend(0.62,0.7,0.98,0.95);
     leg2->AddEntry(hist[0],"nominal","l");

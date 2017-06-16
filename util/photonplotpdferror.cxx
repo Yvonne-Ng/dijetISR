@@ -24,6 +24,7 @@
 #include "TFile.h"
 #include "TROOT.h"
 #include <fstream>
+#include <stdlib.h>
 
 using namespace std;
 using std::string;
@@ -35,7 +36,7 @@ using std::vector;
 #if 1
 #define totalBins 60
 #define binMax 0.9
-#define binMin 0.
+#define binMin -0.2
 #endif
 
 
@@ -69,8 +70,9 @@ vector<double> reading_weights(string & weightInputName){
 
 int main(int argc, char* argv[]){
     //gROOT->Reset();
-    if (argc!=4){
-        cout<<"Usage:" <<argv[0] <<"<variable name> <filename>" <<endl;
+    if (argc!=5){
+        cout<<"Usage:" <<argv[0] <<"<variable name> <filename> <weight file> <massNumber>" <<endl;
+
         return 1;
     }
 
@@ -95,7 +97,9 @@ int main(int argc, char* argv[]){
 
 //Input Weight File
     string weightFileName=argv[3]; 
-    
+   
+//Input Mass number;
+    int massN=atoi(argv[4]);
 //Reading the weight 
     vector<double> pdfWeights=reading_weights(weightFileName);
 
@@ -110,7 +114,7 @@ int main(int argc, char* argv[]){
      for (int j=0; j<103 ; j++){
         preCutHistName="preCut";
         histTau21Name="Tau21";
-        cout<<"j number: "<<j<<endl;
+        //cout<<"j number: "<<j<<endl;
         if (j==0){
             histName="Nominal";
 	    preCutHistName+="Nominal";
@@ -139,7 +143,7 @@ int main(int argc, char* argv[]){
 
 	}
 
-               cout<<"hist Tau21 Name: "<<histTau21Name<<endl;
+               //cout<<"hist Tau21 Name: "<<histTau21Name<<endl;
             hist[j]= new TH1F(histName.c_str(), histName.c_str(), totalBins,binMin,binMax); //Range for tau21
 	    preCutHist[j]=new TH1F(preCutHistName.c_str(), preCutHistName.c_str(),  totalBins,binMin,binMax);
             histTau21[j]= new TH1F(histTau21Name.c_str(), histTau21Name.c_str(),totalBins,binMin,binMax);
@@ -158,7 +162,7 @@ int main(int argc, char* argv[]){
 
     //Getting entries
     int nentries = Tree->GetEntries();
-    cout<<"Tree entries #: "<<nentries<<endl;
+    //cout<<"Tree entries #: "<<nentries<<endl;
 
     //Filling the histogram
     string preCutHistFilling;
@@ -206,7 +210,7 @@ int main(int argc, char* argv[]){
         }
         //cout<<"histogram Name: "<<histogramName<<endl;
 	//cout<<"pre-histogram name: "<<preHistogramName<<endl;
-        cout<<"histtau21 name:"<<histTau21HistogramName<<endl;
+        //cout<<"histtau21 name:"<<histTau21HistogramName<<endl;
 
         histFilling+=histogramName;
 	    preCutHistFilling+=preHistogramName;
@@ -270,14 +274,14 @@ int main(int argc, char* argv[]){
         }
 
         //Print out the Hist filling and weighting option 
-        cout<<"Hist Filling: "<<histFilling<<endl;
+        /*cout<<"Hist Filling: "<<histFilling<<endl;
         cout<<"weighting: "<<weighting<<endl;
 
 	cout<<"preCut hist Filling: "<<preCutHistFilling<<endl;
 	cout<<"preCut weighting:" <<preCutWeight<<endl;
         
         cout<<"Tau21 hist Filling: "<<histTau21Filling<<endl;
-        cout<<"Tau21 hist Weighting:"<<histTau21Weight<<endl;
+        cout<<"Tau21 hist Weighting:"<<histTau21Weight<<endl;*/
         //Actually doing the drawing
         Tree->Draw(histFilling.c_str(), weighting.c_str(), "goff");
 	Tree->Draw(preCutHistFilling.c_str(), preCutWeight.c_str(), "goff");
@@ -285,15 +289,15 @@ int main(int argc, char* argv[]){
     }
 //Adding the histogram bin loop to find the min and  
     //for (int i=0; i
-cout<<"test pt1"<<endl;
+//cout<<"test pt1"<<endl;
 //Drawing the histogram 
     // Setting e canvas name 
-    string histTitle=varInput;
-    histTitle+=" with pdfweighting";
-
+    string histTitle;
+    histTitle=="Signal Tau21DDT Distribution of Resonance Mass ";
+    histTitle+=to_string(massN);
     string setHistTitle=histTitle; //param for setHistTitle
     setHistTitle+=";";
-    setHistTitle+=varInput;
+    setHistTitle+="Tau21DDT";
     setHistTitle+=";";
     setHistTitle+="Event #";
     hist[0]->SetTitle(setHistTitle.c_str());
@@ -302,7 +306,7 @@ cout<<"test pt1"<<endl;
             cout<<"histSetColor out of range. aborted"<<endl;
             return 3;
         }   */
-cout<<"test point 2"<<endl;    
+//cout<<"test point 2"<<endl;    
     //Declaring and initializing the canvas
     
     //Drawing the histograms
@@ -324,7 +328,7 @@ cout<<"test point 2"<<endl;
         hist[104]->Fill(scl*(i-0.5), minEntriesinBin);
         
     }
-cout<<"test point 3 "<<endl;
+//cout<<"test point 3 "<<endl;
     //Setting line color
     for (int i=0; i<105; i++){
         
@@ -348,9 +352,11 @@ cout<<"test point 3 "<<endl;
             hist[i]->SetMarkerStyle(1);
             }
         }
-cout<<"test point 4"<<endl;
+//cout<<"test point 4"<<endl;
     //histTau21 needs to be furthre reweighted from the result of preCuthistogram
     TCanvas *c1= new TCanvas();
+    //TitleName="Signal tau21DDT distribution for Resonance Mass of" +to_string(massN)+" GeV";
+    //c1->SetTitle(TitleName.c_str();"Event #"; "tau21DDT");
     double histScale;
     //Drawing the histogram
     for (int i=0; i<103; i++){
@@ -370,7 +376,7 @@ cout<<"test point 4"<<endl;
         }
         //hist[0]->Draw("same");
     }
-cout<<"test point 5"<<endl;
+//cout<<"test point 5"<<endl;
     //Adding the legend 
     TLegend *leg = new TLegend(0.62,0.7,0.98,0.95);
     leg->AddEntry(hist[0],"nominal","l");
@@ -380,7 +386,7 @@ cout<<"test point 5"<<endl;
 
     //Drawing the legend
     leg->Draw("same");
-cout<<"test point5 "<<endl;
+//cout<<"test point5 "<<endl;
 //Canvas that draws the nominal and the rest and print out the entries number
     
     TCanvas * c2 = new TCanvas();
@@ -412,6 +418,7 @@ cout<<"test point5 "<<endl;
 
     outfile<<inputFileName<<"    "<<maxPercent<<"    "<<minPercent<<"    "<<(maxPercent-minPercent);
 
+   // cout<<inputFileName<<"    "<<maxPercent<<"    "<<minPercent<<"    "<<(maxPercent-minPercent);
     outfile.close();
     c1->SaveAs(pdfName.c_str());
     c1->SaveAs(macroName.c_str());
